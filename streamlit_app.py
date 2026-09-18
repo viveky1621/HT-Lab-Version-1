@@ -1,8 +1,6 @@
-
 import streamlit as st
 import os
 
-# 1. Industrial Laboratory Configuration
 st.set_page_config(
     page_title="ThermoLab Industrial",
     page_icon="🧪",
@@ -10,35 +8,24 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# 2. UI Cleaning
+# Strip ALL Streamlit chrome and padding
 st.markdown("""
     <style>
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
-    .stApp { background-color: #0f172a; margin: 0; padding: 0; }
-    iframe { border: none !important; width: 100vw; height: 100vh; }
+    .block-container { padding: 0 !important; max-width: 100% !important; }
+    .stApp { background-color: #0f172a; overflow: hidden; }
+    div[data-testid="stVerticalBlock"] { gap: 0 !important; }
+    iframe { border: none !important; display: block; }
     </style>
 """, unsafe_allow_html=True)
 
-# 3. Serving Logic
-INDEX_PATH = os.path.join(os.getcwd(), "static", "index.html")
+PATCHED_PATH = os.path.join(os.getcwd(), "static", "index_patched.html")
 
-if not os.path.exists(INDEX_PATH):
-    st.error("DCS Terminal Error: Laboratory hardware build (static/) not found in repository.")
+if not os.path.exists(PATCHED_PATH):
+    st.error("Build not found. Run: python3 patch_build.py")
 else:
-    with open(INDEX_PATH, 'r', encoding='utf-8') as f:
+    with open(PATCHED_PATH, "r", encoding="utf-8") as f:
         html = f.read()
-
-    # Correct Asset Paths for Streamlit Cloud Static Serving
-    # We replace relative paths with the Streamlit static endpoint /app/static/
-    # (Streamlit Cloud serves the 'static' folder at /static/ URL prefix)
-    html = html.replace('href="./assets/', 'href="/static/assets/')
-    html = html.replace('src="./assets/', 'src="/static/assets/')
-    html = html.replace('href="./favicon.svg"', 'href="/static/favicon.svg"')
-
-    # Inject Base Path for internal routing/fonts
-    html = html.replace('<head>', '<head>\n    <base href="/static/">')
-
-    # Render High-Fidelity Rig
-    st.components.v1.html(html, height=1200, scrolling=True)
+    st.components.v1.html(html, height=1050, scrolling=True)
