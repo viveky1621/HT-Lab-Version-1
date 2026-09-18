@@ -76,18 +76,18 @@ export const AnimatedPipe: React.FC<AnimatedPipeProps> = ({
         strokeLinejoin="round"
       />
 
-      {/* Moving Particles / Bubbles Overlay */}
+      {/* Moving Particles / Bubbles Overlay - HIGHER VISIBILITY */}
       {flowRate > 0.001 && (
         <polyline
           points={points}
           fill="none"
-          stroke="rgba(255,255,255,0.5)"
-          strokeWidth={Math.max(diameter - 4, 2)}
-          strokeDasharray="10, 30"
+          stroke="rgba(255,255,255,0.9)"
+          strokeWidth={Math.max(diameter - 2, 4)}
+          strokeDasharray="15, 25"
           strokeLinecap="round"
           strokeLinejoin="round"
           className={clsx(
-            "pointer-events-none transition-all duration-500",
+            "pointer-events-none transition-all duration-500 shadow-[0_0_10px_white]",
             reverse ? "animate-fluid-reverse" : "animate-fluid-forward"
           )}
           style={{
