@@ -1,10 +1,6 @@
 
 import streamlit as st
-import streamlit.components.v1 as components
 import os
-import http.server
-import socketserver
-import threading
 
 # Set page config for industrial lab
 st.set_page_config(
@@ -14,22 +10,6 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# Configuration
-PORT = 8000
-DIRECTORY = os.path.join(os.getcwd(), "thermolab-web", "dist")
-
-def serve_static():
-    os.chdir(DIRECTORY)
-    handler = http.server.SimpleHTTPRequestHandler
-    with socketserver.TCPServer(("", PORT), handler) as httpd:
-        httpd.serve_forever()
-
-# Start the static file server in a background thread
-if not hasattr(st, 'already_started_server'):
-    st.already_started_server = True
-    thread = threading.Thread(target=serve_static, daemon=True)
-    thread.start()
-
 # Hide Streamlit UI elements
 st.markdown("""
     <style>
@@ -38,9 +18,26 @@ st.markdown("""
     header {visibility: hidden;}
     body { background-color: #0f172a; }
     .stApp { margin: 0; padding: 0; }
-    iframe { border: none !important; }
+    iframe { border: none !important; width: 100%; height: 95vh; }
+    .stHtml { padding: 0; }
+    div[data-testid="stVerticalBlock"] > div:first-child { padding: 0; }
     </style>
 """, unsafe_allow_html=True)
 
-# Display the lab in a high-fidelity iframe
-st.components.v1.iframe(f"http://localhost:{PORT}/index.html", height=900, scrolling=False)
+# Path to the compiled React app
+build_path = os.path.join(os.getcwd(), "thermolab-web", "dist", "index.html")
+
+if not os.path.exists(build_path):
+    st.error(f"Error: Laboratory Build not found at {build_path}. Please ensure 'thermolab-web/dist' is pushed to GitHub.")
+else:
+    # Use standard Streamlit components to serve the HTML file directly
+    with open(build_path, 'r', encoding='utf-8') as f:
+        html_string = f.read()
+
+    # Inject base href to ensure assets load from the correct relative path
+    # This helps when serving static HTML content directly
+    head_tag = "<head>"
+    if head_tag in html_string:
+        html_string = html_string.replace(head_tag, head_tag + '\n    <base href="./">')
+
+    st.components.v1.html(html_string, height=1000, scrolling=True)
