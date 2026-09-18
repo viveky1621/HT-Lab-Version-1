@@ -1,5 +1,6 @@
 
 import streamlit as st
+import os
 
 # 1. Industrial Laboratory Configuration
 st.set_page_config(
@@ -9,41 +10,35 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# 2. Advanced CSS to make the laboratory full-screen
+# 2. UI Cleaning
 st.markdown("""
     <style>
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
-    .stApp { background-color: #0f172a; margin: 0; padding: 0; overflow: hidden; }
-    /* Ensure the iframe fills the entire Streamlit container */
-    iframe {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        border: none !important;
-        margin: 0;
-        padding: 0;
-        background: #0f172a;
-    }
+    .stApp { background-color: #0f172a; margin: 0; padding: 0; }
+    iframe { border: none !important; width: 100vw; height: 100vh; }
     </style>
 """, unsafe_allow_html=True)
 
-# 3. Serving the Laboratory Rig
-# We use the built-in static serving mechanism defined in .streamlit/config.toml
-# On Streamlit Cloud, assets in /static/ are served relative to the root URL
-try:
-    # We attempt to reach the static/index.html which contains the compiled React app
-    st.components.v1.iframe("./static/index.html", height=1000)
-except Exception as e:
-    st.error("DCS Terminal Link Failure. Please ensure the laboratory system is fully deployed.")
-    st.exception(e)
+# 3. Serving Logic
+INDEX_PATH = os.path.join(os.getcwd(), "static", "index.html")
 
-# 4. Fallback for Local Environments
-st.markdown("""
-    <div style="position: fixed; bottom: 10px; right: 10px; color: rgba(255,255,255,0.2); font-size: 8px; font-family: monospace;">
-        THERMOLAB_OS v1.0.4_DEPLOY
-    </div>
-""", unsafe_allow_html=True)
+if not os.path.exists(INDEX_PATH):
+    st.error("DCS Terminal Error: Laboratory hardware build (static/) not found in repository.")
+else:
+    with open(INDEX_PATH, 'r', encoding='utf-8') as f:
+        html = f.read()
+
+    # Correct Asset Paths for Streamlit Cloud Static Serving
+    # We replace relative paths with the Streamlit static endpoint /app/static/
+    # (Streamlit Cloud serves the 'static' folder at /static/ URL prefix)
+    html = html.replace('href="./assets/', 'href="/static/assets/')
+    html = html.replace('src="./assets/', 'src="/static/assets/')
+    html = html.replace('href="./favicon.svg"', 'href="/static/favicon.svg"')
+
+    # Inject Base Path for internal routing/fonts
+    html = html.replace('<head>', '<head>\n    <base href="/static/">')
+
+    # Render High-Fidelity Rig
+    st.components.v1.html(html, height=1200, scrolling=True)
