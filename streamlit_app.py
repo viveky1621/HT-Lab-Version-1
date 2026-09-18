@@ -1,7 +1,7 @@
 
 import streamlit as st
 
-# Configure page for high-fidelity lab
+# High-fidelity lab configuration
 st.set_page_config(
     page_title="ThermoLab Industrial",
     page_icon="🧪",
@@ -9,17 +9,21 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# Hide Streamlit Chrome
+# Professional Industrial UI Injection
 st.markdown("""
     <style>
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
-    .stApp { background-color: #0f172a; margin: 0; padding: 0; }
-    iframe { border: none !important; width: 100vw; height: 100vh; }
+    .stApp { background-color: #0f172a; margin: 0; padding: 0; overflow: hidden; }
+    iframe { border: none !important; width: 100%; height: 98vh; position: fixed; top: 0; left: 0; }
     </style>
 """, unsafe_allow_html=True)
 
-# The 'static' folder is served automatically because of .streamlit/config.toml
-# We point the iframe to the entry point of the React app
-st.components.v1.iframe("./static/index.html", height=1000, scrolling=False)
+# Streamlit Cloud serves the 'static' folder at /app/static/ or /static/
+# We use the component to embed the React build
+try:
+    st.components.v1.iframe("/static/index.html", height=1000)
+except Exception as e:
+    st.error("DCS Terminal Error: Static assets not reachable. Please refresh or reboot the instance.")
+    st.code(str(e))
