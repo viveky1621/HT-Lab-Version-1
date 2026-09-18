@@ -1,7 +1,8 @@
 
 import streamlit as st
+import os
 
-# High-fidelity lab configuration
+# Set page config for industrial lab
 st.set_page_config(
     page_title="ThermoLab Industrial",
     page_icon="🧪",
@@ -16,14 +17,26 @@ st.markdown("""
     footer {visibility: hidden;}
     header {visibility: hidden;}
     .stApp { background-color: #0f172a; margin: 0; padding: 0; overflow: hidden; }
-    iframe { border: none !important; width: 100%; height: 98vh; position: fixed; top: 0; left: 0; }
+    /* Ensure the component fills the screen */
+    div[data-testid="stHtml"] { width: 100%; height: 98vh; padding: 0; margin: 0; }
+    iframe { border: none !important; width: 100% !important; height: 100% !important; }
     </style>
 """, unsafe_allow_html=True)
 
-# Streamlit Cloud serves the 'static' folder at /app/static/ or /static/
-# We use the component to embed the React build
-try:
-    st.components.v1.iframe("/static/index.html", height=1000)
-except Exception as e:
-    st.error("DCS Terminal Error: Static assets not reachable. Please refresh or reboot the instance.")
-    st.code(str(e))
+# Path to the build file
+INDEX_PATH = os.path.join(os.getcwd(), "static", "index.html")
+
+if not os.path.exists(INDEX_PATH):
+    st.error("SYSTEM ERROR: Static Rig not found. Please ensure 'static/' directory is pushed to GitHub.")
+else:
+    with open(INDEX_PATH, 'r', encoding='utf-8') as f:
+        html_content = f.read()
+
+    # Inject base href to point to Streamlit's static serving path
+    # This allows the React app to find its JS and CSS in /static/assets/
+    head_tag = "<head>"
+    if head_tag in html_content:
+        html_content = html_content.replace(head_tag, head_tag + '\n    <base href="/static/">')
+
+    # Serve the HTML content
+    st.components.v1.html(html_content, height=1000, scrolling=False)
