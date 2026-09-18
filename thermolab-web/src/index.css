@@ -1,0 +1,79 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary-50: #eff6ff;
+  --color-primary-100: #dbeafe;
+  --color-primary-200: #bfdbfe;
+  --color-primary-300: #93c5fd;
+  --color-primary-400: #60a5fa;
+  --color-primary-500: #3b82f6;
+  --color-primary-600: #2563eb;
+  --color-primary-700: #1d4ed8;
+  --color-primary-800: #1e40af;
+  --color-primary-900: #1e3a8a;
+  --color-primary-950: #172554;
+
+  --color-industrial-base: #0f172a;
+  --color-industrial-panel: #1e293b;
+  --color-industrial-border: #334155;
+  --color-industrial-accent: #38bdf8;
+}
+
+:root {
+  background-color: #0f172a;
+  color: #f1f5f9;
+}
+
+body {
+  margin: 0;
+  font-family: 'JetBrains Mono', Inter, system-ui, sans-serif;
+  overflow: hidden;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 10px;
+}
+
+/* KaTeX support */
+@import "katex/dist/katex.min.css";
+
+/* High-Performance Industrial Fluid Animation */
+@keyframes fluid-flow-forward {
+  from { stroke-dashoffset: 40; }
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes fluid-flow-reverse {
+  from { stroke-dashoffset: 0; }
+  to { stroke-dashoffset: 40; }
+}
+
+.animate-fluid-forward {
+  animation: fluid-flow-forward var(--flow-speed, 2s) linear infinite;
+}
+
+.animate-fluid-reverse {
+  animation: fluid-flow-reverse var(--flow-speed, 2s) linear infinite;
+}
+
+.rig-container {
+  background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+  position: relative;
+}
+
+.rig-container::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(#334155 1px, transparent 1px);
+  background-size: 40px 40px;
+  opacity: 0.1;
+  pointer-events: none;
+}

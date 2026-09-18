@@ -1,0 +1,19 @@
+- `[x]` Initializing React + Vite + TypeScript project structure and core configuration.
+- `[x]` Implementing Core Infrastructure (Physics Engine, Sensor Model, Steady State Monitor).
+- `[x]` Implementing Global State Management (Zustand).
+- `[x]` Implementing UI Shell (Toolbar, Sidebar, Layout, Instrument Rack).
+- `[x]` Implementing Experiment 1: Double-Pipe Heat Exchanger.
+- `[x]` Implementing Experiment 2: Shell-and-Tube Heat Exchanger.
+- `[x]` Implementing Experiment 3: Plate-and-Frame Heat Exchanger.
+- `[x]` Implementing Experiment 4: Air-Cooled Heat Exchanger.
+- `[x]` Implementing Experiment 5: Jacketed Stirred Vessel (with PID).
+- `[x]` Implementing Experiment 6: Forced Convection.
+- `[x]` Implementing Experiment 7: Natural Convection.
+- `[x]` Implementing Experiment 8: Pin-Fin Apparatus.
+- `[x]` Implementing Experiment 9: Composite Wall Conduction.
+- `[x]` Implementing Experiment 10: Radiation & Emissivity.
+- `[x]` Implementing Experiment 11: Pool Boiling Apparatus.
+- `[x]` Implementing Experiment 12: Condenser Operation.
+- `[x]` Implementing Reporting and Assessment Engine (HTML Report, CSV Export).
+- `[x]` Implementing Trends View (Real-time charts with Recharts).
+- `[x]` Final Verification and Documentation.
